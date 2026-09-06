@@ -375,6 +375,26 @@
     border-bottom-color: var(--accent);
   }
 
+  .step p a,
+  .note a,
+  .pin a,
+  .checklist a {
+    color: var(--accent-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 2px;
+  }
+  .step p a:hover,
+  .note a:hover,
+  .pin a:hover,
+  .checklist a:hover,
+  .step p a:focus-visible,
+  .note a:focus-visible,
+  .pin a:focus-visible,
+  .checklist a:focus-visible {
+    text-decoration-color: var(--accent);
+  }
+
   .pin {
     margin-top: 28px;
     background: var(--paper-raised);
@@ -413,6 +433,37 @@
   <div class="callout">
     <p><strong>Before anything else:</strong> "trade vs. community college" is usually a false choice — and it's especially true here. MiraCosta itself runs a Technology Career Institute in Carlsbad (welding, HVAC, electrical, and more, most under 21 weeks) and a full Associate in Science in Cybersecurity, right at the school JGB is already enrolled in.</p>
     <p>That means JGB may not need to leave MiraCosta at all — just switch out of an undeclared general-ed track into one of its own hands-on or tech programs. Step 4 below starts by checking that, because it's the fastest possible path if it fits.</p>
+  </div>
+
+  <div class="pin" id="electrician-plan">
+    <h2>Electrician action plan</h2>
+    <p class="step-when">Do these in order</p>
+    <ul class="checklist" data-group="electrician-plan">
+      <li data-id="elec-1">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Call MiraCosta on Tuesday, Sept 8 — ask about transferring out of the general track and into the Electrician Certificate / TCI program</span>
+        </label>
+      </li>
+      <li data-id="elec-2">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Apply to the union apprenticeship (IBEW Local 569 / Electrical Training Institute) online at <a href="https://etiedu.org/" target="_blank" rel="noopener">etiedu.org</a></span>
+        </label>
+      </li>
+      <li data-id="elec-3">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Apply for the <a href="https://abcsd.org/apprenticeship/" target="_blank" rel="noopener">ABC San Diego open-shop apprenticeship</a></span>
+        </label>
+      </li>
+      <li data-id="elec-4">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Pursue companies directly — <a href="https://www.baker-electric.com/careers" target="_blank" rel="noopener">Baker Electric</a>, <a href="https://www.helixelectric.com/careers/" target="_blank" rel="noopener">Helix Electric</a>, <a href="https://www.bergelectric.com/careers/" target="_blank" rel="noopener">Bergelectric</a></span>
+        </label>
+      </li>
+    </ul>
   </div>
 
   <section class="step">
@@ -503,7 +554,7 @@
             <td class="num">$55–65k (apprentice)</td>
             <td class="num">$110–137k — CA BLS median for licensed installers is $137,340</td>
             <td>Moderate–high, confined spaces/heights</td>
-            <td>One of the highest-paid trades; apprenticeship runs through the elevator constructors union (IUEC), not open enrollment</td>
+            <td>One of the highest-paid trades. IUEC's 4-yr union apprenticeship only opens during periodic "recruitments" (roughly every 2 yrs) — but California also certifies elevator mechanics (CCCM) through 3 years of documented on-the-job experience with any employer, no registered apprenticeship required, which is a real non-union on-ramp when Local 18 isn't recruiting</td>
             <td class="verdict-cell"><div class="verdict" data-path="elevator-constructor"><label><input type="radio" name="v-elevator-constructor-t1" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-elevator-constructor-t1" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-elevator-constructor-t1" value="no" class="sr-only"><span>No</span></label></div></td>
           </tr>
           <tr>
@@ -626,10 +677,10 @@
           </tr>
           <tr>
             <td>Elevator constructor</td>
-            <td><span class="seq seq-apprentice">Apprenticeship — only option</span> No CC feeder exists; the sole entry is passing the EIAT test/interview when Local 18 opens a recruitment window</td>
-            <td>No local CC feeder program — apply straight to the apprenticeship</td>
-            <td>IUEC Local 18 (Glendora, covers San Diego County) via NEIEP — recruitment drives run roughly every 2 years; watch neiep.org</td>
-            <td>Dispatched via the IUEC Local 18 hiring hall, not a single employer</td>
+            <td><span class="seq seq-apprentice">Apprenticeship-first, two real routes</span> No CC feeder exists either way: pass the EIAT test/interview when IUEC Local 18 opens a recruitment window, or hire on directly with an independent shop and build CA's CCCM certification through 3 yrs of documented on-the-job experience instead</td>
+            <td>No local CC feeder program — apply straight to the apprenticeship (union) or the employer (non-union)</td>
+            <td>Union: IUEC Local 18 (Glendora, covers San Diego County) via NEIEP — recruitment drives run roughly every 2 years; watch neiep.org. Non-union: hire on directly, then pursue Cal/OSHA's experience-based CCCM track — see dir.ca.gov/dosh/elevatorcertification.html</td>
+            <td>Union: dispatched via IUEC Local 18 hiring hall. Independent/non-union alternatives that hire directly: 24 Hour Elevator (Specialized Elevator Services), Republic Elevator, San Diego Elevator &amp; Lifts, Atlas Elevator, Advantage Elevator — call to confirm they train entry-level hires</td>
             <td>Not a standard Helmets to Hardhats trade — ask Local 18 directly</td>
             <td class="verdict-cell"><div class="verdict" data-path="elevator-constructor"><label><input type="radio" name="v-elevator-constructor-t2" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-elevator-constructor-t2" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-elevator-constructor-t2" value="no" class="sr-only"><span>No</span></label></div></td>
           </tr>
@@ -699,7 +750,7 @@
         </tbody>
       </table>
     </div>
-    <p class="note"><strong>On plumbing and elevator specifically:</strong> MiraCosta doesn't have a real hands-on plumbing program — what shows up under its name is a generic self-paced online "Foundations of Plumbing" course (ed2go), a beginner intro kit, not trade training. And no school in the region — MiraCosta included — feeds directly into the elevator trade; that one only goes through IUEC Local 18.</p>
+    <p class="note"><strong>On plumbing and elevator specifically:</strong> MiraCosta doesn't have a real hands-on plumbing program — what shows up under its name is a generic self-paced online "Foundations of Plumbing" course (ed2go), a beginner intro kit, not trade training. And no school in the region — MiraCosta included — teaches elevator work directly, and IUEC Local 18 is the only union apprenticeship. But it's not the only legal way in: California's Cal/OSHA elevator certification (CCCM) has a second track that qualifies someone through 3 years of documented on-the-job experience at any employer, no registered apprenticeship required — so a non-union San Diego company (24 Hour Elevator, Republic Elevator, San Diego Elevator &amp; Lifts, Atlas Elevator, Advantage Elevator, among others) can legally hire and train someone toward full certification without ever going through Local 18. The tradeoff: no guaranteed union wage steps, training quality depends entirely on that one employer, and the state still has to approve the "proof of competency" — but it removes the biggest bottleneck in the union route, which is simply waiting for Local 18 to open a recruitment window.</p>
     <p class="note"><strong>On timing:</strong> MiraCosta's Fall 2026 semester started August 17 — about 3 weeks before this was written. Standard credit classes (Palomar's Inside Wireman included) use an add deadline around 10% of the term, which has already passed for a normal 16-week class; the next real entry point for those is a late-starting short-term section (some CCs add one around mid-October) or Spring registration. MiraCosta's TCI-style certificate programs often run their own cohort schedule instead, so "too late for the semester" may not apply the same way — that's a call-and-ask situation, not an assumption.</p>
     <p class="note">Verified by web search in September 2026 — program names, phone numbers, and union contacts change; confirm directly before treating any of this as final.</p>
     <ul class="sources">
@@ -723,6 +774,12 @@
       <li><a href="https://abcsd.org/apprenticeship/" target="_blank" rel="noopener">ABC San Diego — open-shop apprenticeship</a></li>
       <li><a href="https://www.ualocal230.org/membership/" target="_blank" rel="noopener">UA Local 230 — membership/apprenticeship</a></li>
       <li><a href="https://www.neiep.org/blog/how-to-become-an-elevator-apprentice-iuec/" target="_blank" rel="noopener">NEIEP/IUEC — elevator apprenticeship</a></li>
+      <li><a href="https://www.dir.ca.gov/dosh/elevatorcertification.html" target="_blank" rel="noopener">Cal/OSHA — elevator mechanic certification (CCCM) requirements</a></li>
+      <li><a href="https://specializedelevator.com/24-hour-elevator/" target="_blank" rel="noopener">24 Hour Elevator (Specialized Elevator Services) — San Diego</a></li>
+      <li><a href="https://www.republicelevator.com/" target="_blank" rel="noopener">Republic Elevator — independent, San Diego to San Jose</a></li>
+      <li><a href="https://sdelevatorlifts.com/elevator-repair/" target="_blank" rel="noopener">San Diego Elevator &amp; Lifts</a></li>
+      <li><a href="https://www.atlaselevator.net/" target="_blank" rel="noopener">Atlas Elevator — San Diego</a></li>
+      <li><a href="https://www.advantageelevator.net/" target="_blank" rel="noopener">Advantage Elevator — San Diego/OC</a></li>
       <li><a href="https://www.talentify.io/job/student-welder-san-diego-california-nassco-23191" target="_blank" rel="noopener">NASSCO — Student Welder program</a></li>
       <li><a href="https://sdmiramar.edu/programs/aviation-maintenance-technology" target="_blank" rel="noopener">Miramar College — Aviation Maintenance Technology</a></li>
       <li><a href="https://sdmiramar.edu/programs/diesel-technology" target="_blank" rel="noopener">Miramar College — Diesel Technology</a></li>
