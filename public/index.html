@@ -1,0 +1,1097 @@
+<title>JGB's Trade Compass</title>
+<style>
+  :root {
+    --paper: #eff1ef;
+    --paper-raised: #ffffff;
+    --ink: #1f2a2e;
+    --ink-soft: #4b5b5f;
+    --accent: #b56a3c;
+    --accent-soft: #ecdbcc;
+    --accent-ink: #7a3f1f;
+    --line: #d6dad8;
+    --good: #5b7a5e;
+    --good-soft: #dde6dd;
+    --bad: #a8493f;
+    --bad-soft: #f1dad7;
+    --font-display: "Barlow Semi Condensed", "Arial Narrow", sans-serif;
+    --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #1b2225;
+      --paper-raised: #232b2f;
+      --ink: #e7eae8;
+      --ink-soft: #a7b2b0;
+      --accent: #e08a55;
+      --accent-soft: #3a2a20;
+      --accent-ink: #f2c6a3;
+      --line: #33393b;
+      --good: #7fa383;
+      --good-soft: #263229;
+      --bad: #e2776d;
+      --bad-soft: #3a211e;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #1b2225;
+    --paper-raised: #232b2f;
+    --ink: #e7eae8;
+    --ink-soft: #a7b2b0;
+    --accent: #e08a55;
+    --accent-soft: #3a2a20;
+    --accent-ink: #f2c6a3;
+    --line: #33393b;
+    --good: #7fa383;
+    --good-soft: #263229;
+    --bad: #e2776d;
+    --bad-soft: #3a211e;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.55;
+  }
+  .page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 24px 14px 40px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before {
+    content: "";
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--accent);
+    flex: none;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(32px, 6vw, 44px);
+    letter-spacing: -0.01em;
+    margin: 8px 0 4px;
+    text-wrap: balance;
+  }
+  .dek {
+    color: var(--ink-soft);
+    font-size: 17px;
+    max-width: 62ch;
+    margin: 0 0 18px;
+  }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+    font-family: var(--font-display);
+  }
+  .progress-track {
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--line);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  .progress-label {
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 14px 18px;
+    border-radius: 4px;
+    margin: 0 0 26px;
+  }
+  .callout p { margin: 0; }
+  .callout p + p { margin-top: 8px; }
+  .callout strong { color: var(--accent-ink); }
+
+  section.step {
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    margin-top: 24px;
+  }
+  section.step:first-of-type {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+  }
+  .step-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 6px;
+  }
+  .step-num {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--ink-soft);
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 24px;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .step-when {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 14px 44px;
+  }
+  .step p { margin: 0 0 14px; max-width: 64ch; }
+  h3.subhead {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin: 28px 0 4px;
+  }
+
+  ul.checklist {
+    list-style: none;
+    margin: 18px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  ul.checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 4px;
+    border-radius: 6px;
+  }
+  ul.checklist label {
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+  }
+  ul.checklist input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--ink-soft);
+    border-radius: 5px;
+    flex: none;
+    margin-top: 2px;
+    background: var(--paper-raised);
+    position: relative;
+    cursor: pointer;
+  }
+  ul.checklist input[type="checkbox"]:checked {
+    background: var(--good);
+    border-color: var(--good);
+  }
+  ul.checklist input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(40deg);
+  }
+  ul.checklist input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  ul.checklist span.item-text { padding-top: 1px; }
+  ul.checklist li.done span.item-text {
+    color: var(--ink-soft);
+    text-decoration: line-through;
+    text-decoration-color: var(--line);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    margin-top: 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 640px;
+    font-size: 14.5px;
+    background: var(--paper-raised);
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  thead th {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: var(--paper);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.example td { color: var(--ink-soft); font-style: italic; }
+  .tag {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--good-soft);
+    color: var(--good);
+  }
+
+  .seq {
+    display: block;
+    width: fit-content;
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 2px 9px;
+    border-radius: 999px;
+    margin-bottom: 6px;
+    white-space: nowrap;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .verdict-cell { white-space: nowrap; }
+  .verdict { display: inline-flex; gap: 4px; }
+  .verdict label { cursor: pointer; }
+  .verdict span {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink-soft);
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .verdict input:checked + span { border-color: transparent; }
+  .verdict input[value="yes"]:checked + span { background: var(--good-soft); color: var(--good); }
+  .verdict input[value="maybe"]:checked + span { background: var(--accent-soft); color: var(--accent-ink); }
+  .verdict input[value="no"]:checked + span { background: var(--bad-soft); color: var(--bad); }
+  .verdict input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .seq-apprentice { background: var(--accent-soft); color: var(--accent-ink); }
+  .seq-class { background: var(--paper); color: var(--ink-soft); border: 1px solid var(--line); }
+  .seq-both { background: var(--good-soft); color: var(--good); }
+
+  .note {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    margin-top: 10px;
+  }
+
+  ul.sources {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 4px 20px;
+    font-family: var(--font-display);
+    font-size: 12.5px;
+  }
+  ul.sources a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--line);
+  }
+  ul.sources a:hover,
+  ul.sources a:focus-visible {
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent);
+  }
+
+  .pin {
+    margin-top: 28px;
+    background: var(--paper-raised);
+    border: 1.5px solid var(--accent);
+    border-radius: 10px;
+    padding: 18px 22px;
+  }
+  .pin h2 { color: var(--accent-ink); }
+
+  footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress-fill { transition: none; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+
+<div class="page">
+
+  <p class="eyebrow">Career &amp; Technical Path — Working Plan</p>
+  <h1>JGB's Trade Compass</h1>
+  <p class="dek">A 4–6 week plan to turn "not loving the classroom" into a real decision, before the next community college registration deadline.</p>
+
+  <div class="progress-row">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-label" id="progress-label">0 / 0 done</div>
+  </div>
+
+  <div class="callout">
+    <p><strong>Before anything else:</strong> "trade vs. community college" is usually a false choice — and it's especially true here. MiraCosta itself runs a Technology Career Institute in Carlsbad (welding, HVAC, electrical, and more, most under 21 weeks) and a full Associate in Science in Cybersecurity, right at the school JGB is already enrolled in.</p>
+    <p>That means JGB may not need to leave MiraCosta at all — just switch out of an undeclared general-ed track into one of its own hands-on or tech programs. Step 4 below starts by checking that, because it's the fastest possible path if it fits.</p>
+  </div>
+
+  <section class="step">
+    <div class="step-head">
+      <span class="step-num">1</span>
+      <h2>Get a real read on the fit</h2>
+    </div>
+    <p class="step-when">This week</p>
+    <p>"Doesn't enjoy traditional classroom school" could mean a lot of things — pace, format, subject matter, or genuinely wanting to work with hands and objects instead of ideas on paper. Worth pinning down before picking a trade, since some trade programs (aviation maintenance, for one) are still classroom- and test-heavy.</p>
+    <ul class="checklist" data-group="assess">
+      <li data-id="assess-1">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Take the free O*NET Interest Profiler together (<em>mynextmove.org/explore/ip</em> — no login, ~15 minutes) and compare results</span>
+        </label>
+      </li>
+      <li data-id="assess-2">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Write down 3 things JGB has fixed, built, or figured out on their own in the past year — even small ones (a bike, a PC, a car repair, a piece of furniture)</span>
+        </label>
+      </li>
+      <li data-id="assess-3">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Ask directly: "If money weren't a factor, what would you spend a Saturday doing with your hands?" — and actually write the answer down</span>
+        </label>
+      </li>
+    </ul>
+  </section>
+
+  <section class="step">
+    <div class="step-head">
+      <span class="step-num">2</span>
+      <h2>Map the realistic options</h2>
+    </div>
+    <p class="step-when">Reference — while exploring</p>
+    <p>A shortlist of trades and trade-adjacent paths worth a look, given "wide open" and hands-on-leaning. Figures below are national ballparks to compare shape, not quotes — actual pay and program length vary by state and by union vs. non-union apprenticeship, so verify locally in Step 3.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Path</th>
+            <th>Typical training</th>
+            <th>Cost to complete</th>
+            <th>Starting pay (California)</th>
+            <th>10-yr earning potential</th>
+            <th>Physical demand</th>
+            <th>Worth knowing</th>
+            <th>Your take</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Electrician</td>
+            <td>4–5 yr apprenticeship, paid</td>
+            <td>$0 — paid apprenticeship (minor tool/dues costs ~$300–500)</td>
+            <td class="num">$50–62k (10th percentile)</td>
+            <td class="num">$76k median; top 10% $140k+</td>
+            <td>Moderate–high</td>
+            <td>Earn while training via IBEW or open-shop apprenticeship</td>
+            <td class="verdict-cell"><div class="verdict" data-path="electrician"><label><input type="radio" name="v-electrician-t1" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-electrician-t1" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-electrician-t1" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>HVAC/R technician</td>
+            <td>6–24 mo. certificate</td>
+            <td>MiraCosta TCI ~$750+/course (grant-subsidized; ~90% of TCI students don't pay full price); Palomar credit path ~$46/unit</td>
+            <td class="num">$48–58k</td>
+            <td class="num">$65–72k median; top 10% $85k+</td>
+            <td>High (attics, roofs, outdoors)</td>
+            <td>Fast entry, steady demand — repair work can't be outsourced</td>
+            <td class="verdict-cell"><div class="verdict" data-path="hvac-r-technician"><label><input type="radio" name="v-hvac-r-technician-t1" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-hvac-r-technician-t1" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-hvac-r-technician-t1" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Plumber / pipefitter</td>
+            <td>4–5 yr apprenticeship, paid</td>
+            <td>$0 — paid apprenticeship</td>
+            <td class="num">$52k (1–3 yrs)</td>
+            <td class="num">$85–87k (8+ yrs)</td>
+            <td>High</td>
+            <td>Strong union pipeline (UA); consistently in shortage</td>
+            <td class="verdict-cell"><div class="verdict" data-path="plumber-pipefitter"><label><input type="radio" name="v-plumber-pipefitter-t1" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-plumber-pipefitter-t1" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-plumber-pipefitter-t1" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Elevator constructor</td>
+            <td>4 yr apprenticeship, paid (NEIEP)</td>
+            <td>$0 — paid apprenticeship</td>
+            <td class="num">$55–65k (apprentice)</td>
+            <td class="num">$110–137k — CA BLS median for licensed installers is $137,340</td>
+            <td>Moderate–high, confined spaces/heights</td>
+            <td>One of the highest-paid trades; apprenticeship runs through the elevator constructors union (IUEC), not open enrollment</td>
+            <td class="verdict-cell"><div class="verdict" data-path="elevator-constructor"><label><input type="radio" name="v-elevator-constructor-t1" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-elevator-constructor-t1" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-elevator-constructor-t1" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Welder</td>
+            <td>6–18 mo. certificate</td>
+            <td>$0 at San Diego Continuing Education (tuition-free certs); MiraCosta TCI ~$750+/course</td>
+            <td class="num">$44–50k (10th percentile)</td>
+            <td class="num">$75k (8+ yrs); top 10% $82k</td>
+            <td>High, heat/fume exposure</td>
+            <td>Pay tracks certifications (pipe, structural) more than the school name</td>
+            <td class="verdict-cell"><div class="verdict" data-path="welder"><label><input type="radio" name="v-welder-t1" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-welder-t1" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-welder-t1" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Diesel / heavy equipment mechanic</td>
+            <td>1–2 yr program</td>
+            <td>~$3–5k (Miramar College, $46/unit); some SD Continuing Education options may be tuition-free</td>
+            <td class="num">$50–56k</td>
+            <td class="num">$75–80k</td>
+            <td>High</td>
+            <td>Growing with freight and infrastructure spending</td>
+            <td class="verdict-cell"><div class="verdict" data-path="diesel-heavy-equipment-mechanic"><label><input type="radio" name="v-diesel-heavy-equipment-mechanic-t1" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-diesel-heavy-equipment-mechanic-t1" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-diesel-heavy-equipment-mechanic-t1" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>CNC machinist</td>
+            <td>1–2 yr program</td>
+            <td>$0 at San Diego Continuing Education (tuition-free); ~$3–5k for SD City College A.S.</td>
+            <td class="num">$46–50k</td>
+            <td class="num">$67–76k</td>
+            <td>Moderate, indoor, precision work</td>
+            <td>Good fit if it's precision and tooling that appeals, not just physical labor</td>
+            <td class="verdict-cell"><div class="verdict" data-path="cnc-machinist"><label><input type="radio" name="v-cnc-machinist-t1" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-cnc-machinist-t1" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-cnc-machinist-t1" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Industrial maintenance / mechatronics</td>
+            <td>1–2 yr program</td>
+            <td>$0 — paid Solar Turbines apprenticeship</td>
+            <td class="num">$45–51k</td>
+            <td class="num">$65–67k</td>
+            <td>Moderate</td>
+            <td>Blends electrical + mechanical; less common program, high demand</td>
+            <td class="verdict-cell"><div class="verdict" data-path="industrial-maintenance-mechatronics"><label><input type="radio" name="v-industrial-maintenance-mechatronics-t1" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-industrial-maintenance-mechatronics-t1" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-industrial-maintenance-mechatronics-t1" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Aviation maintenance (A&amp;P)</td>
+            <td>18–24 mo., FAA-regulated</td>
+            <td>~$5k tuition (Miramar, $46/unit) + $1–3k tools/testing fees</td>
+            <td class="num">$53k</td>
+            <td class="num">$90–96k (CA median)</td>
+            <td>Moderate</td>
+            <td>More classroom and written testing than most trades — flag if that's the real objection</td>
+            <td class="verdict-cell"><div class="verdict" data-path="aviation-maintenance-aandp"><label><input type="radio" name="v-aviation-maintenance-aandp-t1" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-aviation-maintenance-aandp-t1" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-aviation-maintenance-aandp-t1" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>IT / network support</td>
+            <td>3–12 mo. of self-paced certs (CompTIA A+, Network+)</td>
+            <td>~$1–2.5k (CC coursework + A+/Network+ exams, ~$550–950 combined)</td>
+            <td class="num">$50–55k (support specialist)</td>
+            <td class="num">$90–99k (network administrator)</td>
+            <td>Low, desk-based</td>
+            <td>Cert-driven, not classroom-driven — worth a look if it's lectures being rejected, not hands-on troubleshooting</td>
+            <td class="verdict-cell"><div class="verdict" data-path="it-network-support"><label><input type="radio" name="v-it-network-support-t1" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-it-network-support-t1" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-it-network-support-t1" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Cybersecurity</td>
+            <td>1–2 yr program or certs (Security+) after some IT time</td>
+            <td>~$3k (CC A.S., $46/unit) + Security+ exam ~$440</td>
+            <td class="num">$73k (10th percentile)</td>
+            <td class="num">$140k median; top 10% $220k+</td>
+            <td>Low, desk-based</td>
+            <td>Rarely an entry-level-day-one path — usually built on top of IT/helpdesk experience; many CCs now offer an associate track</td>
+            <td class="verdict-cell"><div class="verdict" data-path="cybersecurity"><label><input type="radio" name="v-cybersecurity-t1" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-cybersecurity-t1" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-cybersecurity-t1" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">California-specific figures from BLS OEWS and industry salary aggregators, verified by web search in September 2026 — "starting" uses each occupation's lower-end/entry California wage, "10-yr potential" uses the California median or an experienced-level wage as a realistic marker to expect by then, not a guarantee. Verify current numbers at bls.gov/oes before treating any of this as final.</p>
+
+    <h3 class="subhead">Where to start, in North San Diego County</h3>
+    <p>Specific to JGB already being at MiraCosta in Oceanside — several of these are literally a call away. These split into three real patterns: the union trades (electrician, plumber, elevator) put you straight into a <em>paid</em> apprenticeship where classroom hours are already built in — apply directly, no separate CC step needed. Others (HVAC, welding, diesel, aviation) run through MiraCosta/Palomar/Miramar coursework first, because that's what makes you hireable or sponsorable at all. And IT-type paths work best running school and a real job side by side.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Path</th>
+            <th>Start with</th>
+            <th>Community college program</th>
+            <th>Apprenticeship / employer</th>
+            <th>Named local employers</th>
+            <th>Military-connected route</th>
+            <th>Your take</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Electrician</td>
+            <td><span class="seq seq-apprentice">Apprenticeship first</span> Apply directly to either program below — no union membership required for the open-shop route; related classroom instruction is bundled into both</td>
+            <td><strong>MiraCosta's own Electrician Certificate Program</strong> (TCI, Carlsbad) — call (760) 795-6820 to ask about the next cohort, since it doesn't run on the standard semester calendar; also Palomar College Inside Wireman, A.S. (San Marcos)</td>
+            <td><strong>Union:</strong> IBEW Local 569 / Electrical Training Institute — (858) 569-6633. <strong>Open shop (direct-to-contractor):</strong> ABC San Diego's apprenticeship — employed by a member electrical contractor, night classes affiliated with San Diego Community College, tuition-free, 3–5 yrs</td>
+            <td>Baker Electric, Helix Electric, Bergelectric all run confirmed apprentice programs locally (union); ABC San Diego connects open-shop apprentices to its member contractors directly rather than one company</td>
+            <td>Helmets to Hardhats fast-tracks veterans into IBEW 569</td>
+            <td class="verdict-cell"><div class="verdict" data-path="electrician"><label><input type="radio" name="v-electrician-t2" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-electrician-t2" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-electrician-t2" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>HVAC/R technician</td>
+            <td><span class="seq seq-class">Classes first</span> The &lt;21-wk TCI cert makes him hireable fast, and gives the union apprenticeship (sponsorship-based) something to sponsor</td>
+            <td><strong>MiraCosta's own Technology Career Institute</strong>, Carlsbad — (760) 795-6820, tours Fridays 9am; also Palomar HVAC/ACR (San Marcos)</td>
+            <td>UA Local 230 Plumbers, Steamfitters &amp; HVAC/R — sponsorship-based apprenticeship</td>
+            <td>Not independently researched — ask MiraCosta TCI or UA Local 230 for their current contractor list</td>
+            <td>Helmets to Hardhats via San Diego Building &amp; Construction Trades Council</td>
+            <td class="verdict-cell"><div class="verdict" data-path="hvac-r-technician"><label><input type="radio" name="v-hvac-r-technician-t2" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-hvac-r-technician-t2" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-hvac-r-technician-t2" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Plumber / pipefitter</td>
+            <td><span class="seq seq-apprentice">Apprenticeship first</span> Apply directly to UA Local 230 — classroom instruction happens inside the apprenticeship</td>
+            <td>Palomar's apprenticeship-credit coursework</td>
+            <td>UA Local 230, Union Pipe Trades Training Center, Santee — (619) 262-7589</td>
+            <td>Dispatched via the UA Local 230 hiring hall across signatory contractors, not a single employer</td>
+            <td>Helmets to Hardhats</td>
+            <td class="verdict-cell"><div class="verdict" data-path="plumber-pipefitter"><label><input type="radio" name="v-plumber-pipefitter-t2" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-plumber-pipefitter-t2" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-plumber-pipefitter-t2" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Elevator constructor</td>
+            <td><span class="seq seq-apprentice">Apprenticeship — only option</span> No CC feeder exists; the sole entry is passing the EIAT test/interview when Local 18 opens a recruitment window</td>
+            <td>No local CC feeder program — apply straight to the apprenticeship</td>
+            <td>IUEC Local 18 (Glendora, covers San Diego County) via NEIEP — recruitment drives run roughly every 2 years; watch neiep.org</td>
+            <td>Dispatched via the IUEC Local 18 hiring hall, not a single employer</td>
+            <td>Not a standard Helmets to Hardhats trade — ask Local 18 directly</td>
+            <td class="verdict-cell"><div class="verdict" data-path="elevator-constructor"><label><input type="radio" name="v-elevator-constructor-t2" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-elevator-constructor-t2" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-elevator-constructor-t2" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Welder</td>
+            <td><span class="seq seq-class">Classes first, then apply</span> A cert builds real skill/certifications before applying — NASSCO takes beginners, but a cert opens better starting pay</td>
+            <td><strong>MiraCosta TCI Welding</strong>, Carlsbad; also Palomar Welding Technology (San Marcos)</td>
+            <td>NASSCO shipyard Student Welder program — paid 8-week start, then journeyman track; jobs.nassco.com</td>
+            <td>General Dynamics NASSCO (shipyard, Student Welder program)</td>
+            <td>Navy/Marine Hull Maintenance Technician rating</td>
+            <td class="verdict-cell"><div class="verdict" data-path="welder"><label><input type="radio" name="v-welder-t2" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-welder-t2" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-welder-t2" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Diesel / heavy equipment mechanic</td>
+            <td><span class="seq seq-class">Classes first</span> Miramar's program is standalone — there's no comparable union apprenticeship pipeline locally to apply to directly</td>
+            <td>San Diego Miramar College Diesel Technology</td>
+            <td>Trucking, freight, and construction-equipment dealers locally; nearest UTI campus is Long Beach (~100 mi)</td>
+            <td>Not independently researched — ask Miramar College's program for its placement partners</td>
+            <td>Marine Corps Motor Transport Mechanic MOS — trained right at Pendleton</td>
+            <td class="verdict-cell"><div class="verdict" data-path="diesel-heavy-equipment-mechanic"><label><input type="radio" name="v-diesel-heavy-equipment-mechanic-t2" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-diesel-heavy-equipment-mechanic-t2" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-diesel-heavy-equipment-mechanic-t2" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>CNC machinist</td>
+            <td><span class="seq seq-apprentice">Apprenticeship first, if accepted</span> Solar Turbines runs concurrently with SD City College — apply there directly; if not accepted, do the A.S. independently first</td>
+            <td>San Diego City College Machine Technology, A.S.; SD Continuing Education CNC certificate</td>
+            <td>Solar Turbines 4-yr apprenticeship (Master Machinist, Tool &amp; Die), run with San Diego City College — apply at solarturbines.com</td>
+            <td>Solar Turbines (Kearny Mesa)</td>
+            <td>Navy Machinist's Mate rating is the closest analog</td>
+            <td class="verdict-cell"><div class="verdict" data-path="cnc-machinist"><label><input type="radio" name="v-cnc-machinist-t2" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-cnc-machinist-t2" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-cnc-machinist-t2" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Industrial maintenance / mechatronics</td>
+            <td><span class="seq seq-apprentice">Apprenticeship (employer-driven)</span> No confirmed standalone CC program — the Solar Turbines apprenticeship is effectively the entry point</td>
+            <td>Not confirmed in current catalogs — ask MiraCosta/Palomar CTE advising directly</td>
+            <td>Solar Turbines Precision Machine Tool Mechanic apprenticeship</td>
+            <td>Solar Turbines (Kearny Mesa)</td>
+            <td>Various technical ratings — worth asking a recruiter directly</td>
+            <td class="verdict-cell"><div class="verdict" data-path="industrial-maintenance-mechatronics"><label><input type="radio" name="v-industrial-maintenance-mechatronics-t2" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-industrial-maintenance-mechatronics-t2" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-industrial-maintenance-mechatronics-t2" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Aviation maintenance (A&amp;P)</td>
+            <td><span class="seq seq-class">Classes — only path</span> FAA requires a Part 147 program like Miramar's (or 18–30 months of supervised experience, hard to arrange without already being in the industry)</td>
+            <td>San Diego Miramar College AVIM — FAA Part 147 certified, 2.5 yr, one of only two programs in the region</td>
+            <td>Airlines/MRO shops at San Diego airport; General Atomics, Northrop Grumman</td>
+            <td>General Atomics, Northrop Grumman, and MRO shops at San Diego airport</td>
+            <td>Navy/Marine aviation maintenance ratings often credit directly toward the A&amp;P</td>
+            <td class="verdict-cell"><div class="verdict" data-path="aviation-maintenance-aandp"><label><input type="radio" name="v-aviation-maintenance-aandp-t2" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-aviation-maintenance-aandp-t2" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-aviation-maintenance-aandp-t2" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>IT / network support</td>
+            <td><span class="seq seq-both">Both at once</span> Certs and coursework run fine alongside an entry-level help desk or campus IT job — employers weight real ticket experience heavily</td>
+            <td><strong>MiraCosta CSIT department</strong> — same school JGB's already at</td>
+            <td>CompTIA A+/Network+ self-study; local IT and defense contractors</td>
+            <td>Not independently researched — highly employer-diverse; see Qualcomm/ViaSat/defense contractors under Cybersecurity</td>
+            <td>Navy Information Systems Technician rating</td>
+            <td class="verdict-cell"><div class="verdict" data-path="it-network-support"><label><input type="radio" name="v-it-network-support-t2" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-it-network-support-t2" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-it-network-support-t2" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Cybersecurity</td>
+            <td><span class="seq seq-class">Classes first — expect an IT detour</span> Finish the A.S., but plan on 1–2 yrs in a general IT/helpdesk role first — a "cybersecurity" title is rarely the first job out of school</td>
+            <td><strong>MiraCosta's own Associate in Science in Cybersecurity</strong> — a direct hit, no transfer needed</td>
+            <td>Qualcomm, ViaSat, defense/IT contractors; San Diego has a heavy Navy cyber presence (NIWC Pacific-adjacent contractor roles)</td>
+            <td>Qualcomm, ViaSat, and defense/IT contractors with a local presence</td>
+            <td>Navy Cryptologic Technician / IT ratings</td>
+            <td class="verdict-cell"><div class="verdict" data-path="cybersecurity"><label><input type="radio" name="v-cybersecurity-t2" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-cybersecurity-t2" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-cybersecurity-t2" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note"><strong>On plumbing and elevator specifically:</strong> MiraCosta doesn't have a real hands-on plumbing program — what shows up under its name is a generic self-paced online "Foundations of Plumbing" course (ed2go), a beginner intro kit, not trade training. And no school in the region — MiraCosta included — feeds directly into the elevator trade; that one only goes through IUEC Local 18.</p>
+    <p class="note"><strong>On timing:</strong> MiraCosta's Fall 2026 semester started August 17 — about 3 weeks before this was written. Standard credit classes (Palomar's Inside Wireman included) use an add deadline around 10% of the term, which has already passed for a normal 16-week class; the next real entry point for those is a late-starting short-term section (some CCs add one around mid-October) or Spring registration. MiraCosta's TCI-style certificate programs often run their own cohort schedule instead, so "too late for the semester" may not apply the same way — that's a call-and-ask situation, not an assumption.</p>
+    <p class="note">Verified by web search in September 2026 — program names, phone numbers, and union contacts change; confirm directly before treating any of this as final.</p>
+    <ul class="sources">
+      <li><a href="https://www.baker-electric.com/careers" target="_blank" rel="noopener">Baker Electric — careers/apprenticeship</a></li>
+      <li><a href="https://www.ibew569.org/employers-and-contractors/" target="_blank" rel="noopener">IBEW 569 — signatory contractors</a></li>
+      <li><a href="https://abcsd.org/apprenticeship/" target="_blank" rel="noopener">ABC San Diego — apprenticeship overview</a></li>
+      <li><a href="https://sdcce.edu/become-a-student/free-tuition.html" target="_blank" rel="noopener">San Diego Continuing Education — free tuition</a></li>
+      <li><a href="https://sdmiramar.edu/node/42242" target="_blank" rel="noopener">Miramar College — AVIM program cost/FAQ</a></li>
+      <li><a href="https://www.cccco.edu/About-Us/Chancellors-Office/Divisions/College-Finance-and-Facilities-Planning/Fiscal-Standards-and-Accountability-Unit/Student-Fees" target="_blank" rel="noopener">CA Community Colleges — student fees</a></li>
+      <li><a href="https://www.stationx.net/comptia-certifications-cost/" target="_blank" rel="noopener">CompTIA certification cost guide</a></li>
+      <li><a href="https://catalog.miracosta.edu/disciplines/automotivetechnology/" target="_blank" rel="noopener">MiraCosta — Automotive Technology</a></li>
+      <li><a href="https://thecoastnews.com/miracosta-receives-nearly-1-million-for-hvac-electrician-programs/" target="_blank" rel="noopener">MiraCosta — HVAC/electrician grant</a></li>
+      <li><a href="https://www.miracosta.edu/office-of-the-president/public-information-office/_docs/maps/map_tci.pdf" target="_blank" rel="noopener">MiraCosta — Technology Career Institute location</a></li>
+      <li><a href="https://www.miracosta.edu/academics/community-education-and-workforce-development/contact-us.html" target="_blank" rel="noopener">MiraCosta — Community Ed &amp; Workforce Dev. contact</a></li>
+      <li><a href="https://www.idp.com/universities-and-colleges/miracosta-college/associate-in-science-in-cybersecurity/PRG-US-00348901/" target="_blank" rel="noopener">MiraCosta — Cybersecurity A.S.</a></li>
+      <li><a href="https://catalog.miracosta.edu/disciplines/computerstudiesandinformationtechnology/" target="_blank" rel="noopener">MiraCosta — CSIT catalog</a></li>
+      <li><a href="https://www.study.palomar.edu/career-education-programs/" target="_blank" rel="noopener">Palomar — Career Education programs</a></li>
+      <li><a href="https://www.palomar.edu/welding/" target="_blank" rel="noopener">Palomar — Welding Technology</a></li>
+      <li><a href="https://www.palomar.edu/careereducation/project/hvac/" target="_blank" rel="noopener">Palomar — HVAC/ACR</a></li>
+      <li><a href="https://www.ibew569.org/training-apprenticeships/" target="_blank" rel="noopener">IBEW Local 569 — apprenticeships</a></li>
+      <li><a href="https://abcsd.org/apprenticeship/" target="_blank" rel="noopener">ABC San Diego — open-shop apprenticeship</a></li>
+      <li><a href="https://www.ualocal230.org/membership/" target="_blank" rel="noopener">UA Local 230 — membership/apprenticeship</a></li>
+      <li><a href="https://www.neiep.org/blog/how-to-become-an-elevator-apprentice-iuec/" target="_blank" rel="noopener">NEIEP/IUEC — elevator apprenticeship</a></li>
+      <li><a href="https://www.talentify.io/job/student-welder-san-diego-california-nassco-23191" target="_blank" rel="noopener">NASSCO — Student Welder program</a></li>
+      <li><a href="https://sdmiramar.edu/programs/aviation-maintenance-technology" target="_blank" rel="noopener">Miramar College — Aviation Maintenance Technology</a></li>
+      <li><a href="https://sdmiramar.edu/programs/diesel-technology" target="_blank" rel="noopener">Miramar College — Diesel Technology</a></li>
+      <li><a href="https://jobs.buildsubmarines.com/jobs/375289147-master-machinist-apprentice-at-solar-turbines-incorporated" target="_blank" rel="noopener">Solar Turbines — Master Machinist apprenticeship</a></li>
+      <li><a href="https://www.sdcity.edu/academics/schools-programs/business-it-cosmo/machineshop.aspx" target="_blank" rel="noopener">San Diego City College — Machine Technology</a></li>
+      <li><a href="https://sdbuildingtrades.com/helmets-to-hardhats/" target="_blank" rel="noopener">San Diego Building Trades Council — Helmets to Hardhats</a></li>
+      <li><a href="https://www.uti.edu/california" target="_blank" rel="noopener">UTI — California campus locations</a></li>
+    </ul>
+  </section>
+
+  <section class="step">
+    <div class="step-head">
+      <span class="step-num">3</span>
+      <h2>Weigh the degree-heavy paths, too</h2>
+    </div>
+    <p class="step-when">For comparison — health, nutrition, fitness, and the math/science strength</p>
+    <p>Trades aren't the only thing on the table. JGB being genuinely into health, nutrition, and fitness — and genuinely good at math and science — points at a real cluster of longer, degree-heavy careers worth comparing honestly against the trade paths above, cost and time included.</p>
+
+    <div class="callout">
+      <p><strong>The local bridge here is almost as clean as MiraCosta's own trade programs:</strong> MiraCosta's Kinesiology courses are explicitly built toward personal training, nutrition/dietetics, athletic training, and physical therapy, with a guaranteed transfer (AA-T) into Cal State San Marcos's Kinesiology B.S. — ten minutes from MiraCosta, and itself explicitly built as pre-PT prep.</p>
+      <p>If the math/science side pulls harder than the patient-care side, UC San Diego's Bioengineering program (ranked top-5 nationally) is the direct bridge between "good at math and science" and the health passion — building the technology instead of using it on patients.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Path</th>
+            <th>Start with</th>
+            <th>Total time to practice</th>
+            <th>Cost to complete</th>
+            <th>Local starting point</th>
+            <th>Starting pay (California)</th>
+            <th>10-yr earning potential</th>
+            <th>Your take</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Personal / physical trainer</td>
+            <td><span class="seq seq-both">Both at once</span></td>
+            <td>Weeks to a year for a cert (NASM/ACE/ISSA); longer alongside a kinesiology degree for clinical or higher-end settings</td>
+            <td>$500–1,500 (cert only — NASM/ACE/ISSA)</td>
+            <td><strong>MiraCosta's own Kinesiology courses</strong> lead directly here — the cheapest, fastest way to test this passion for real</td>
+            <td class="num">$35–45k (employee)</td>
+            <td class="num">$65–75k (specialized/self-employed)</td>
+            <td class="verdict-cell"><div class="verdict" data-path="personal-physical-trainer"><label><input type="radio" name="v-personal-physical-trainer-t3" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-personal-physical-trainer-t3" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-personal-physical-trainer-t3" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Engineer (mechanical / biomedical)</td>
+            <td><span class="seq seq-class">Classes — only path</span></td>
+            <td>4 yrs bachelor's; a PE license (optional, discipline-dependent) adds ~4 more years plus an exam</td>
+            <td>$35k tuition (SDSU, 4 yrs) to $65k (UCSD); more with living costs</td>
+            <td><strong>UC San Diego Bioengineering</strong> — top-5 nationally, the direct math/science-to-health bridge; SDSU Mechanical Engineering as an alternative</td>
+            <td class="num">$78–85k (new grad)</td>
+            <td class="num">$115–130k (CA median)</td>
+            <td class="verdict-cell"><div class="verdict" data-path="engineer-mechanical-biomedical"><label><input type="radio" name="v-engineer-mechanical-biomedical-t3" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-engineer-mechanical-biomedical-t3" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-engineer-mechanical-biomedical-t3" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Pilot (commercial/airline)</td>
+            <td><span class="seq seq-both">Both at once</span></td>
+            <td>2-yr A.S. plus building flight hours to 1,500 (or 1,000–1,250 with an aviation degree) — often 4–6 yrs total</td>
+            <td>~$5k (Miramar A.S.) + $91–124k in flight training — ~$100–130k total</td>
+            <td>San Diego Miramar College Aviation Operations — FAA Part 141 ground school, A.S.; actual flight hours are built separately at an outside flight school</td>
+            <td class="num">$65–90k (regional first officer)</td>
+            <td class="num">$150–250k+ — varies hugely by airline and upgrade timing</td>
+            <td class="verdict-cell"><div class="verdict" data-path="pilot-commercial-airline"><label><input type="radio" name="v-pilot-commercial-airline-t3" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-pilot-commercial-airline-t3" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-pilot-commercial-airline-t3" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Nutritionist / Registered Dietitian</td>
+            <td><span class="seq seq-class">Classes — only path (just got longer)</span></td>
+            <td>~6 yrs — bachelor's + a <strong>now-required master's (as of Jan. 2024)</strong> + supervised practice + the RDN exam</td>
+            <td>~$55–60k (bachelor's + now-required master's)</td>
+            <td>SDSU's ACEND-accredited Didactic Program in Dietetics; UC San Diego Health runs a local dietetic internship</td>
+            <td class="num">$60k</td>
+            <td class="num">$85–94k</td>
+            <td class="verdict-cell"><div class="verdict" data-path="nutritionist-registered-dietitian"><label><input type="radio" name="v-nutritionist-registered-dietitian-t3" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-nutritionist-registered-dietitian-t3" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-nutritionist-registered-dietitian-t3" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Athletic trainer <span class="tag">added</span></td>
+            <td><span class="seq seq-class">Classes — only path</span></td>
+            <td>~6 yrs — bachelor's in exercise science + a <strong>required master's (as of 2022)</strong> + the BOC exam</td>
+            <td>~$55–75k (bachelor's + CAATE master's)</td>
+            <td>CSUSM Kinesiology B.S. (Movement Science) feeds directly toward an accredited master's</td>
+            <td class="num">$46–50k</td>
+            <td class="num">$66–78k</td>
+            <td class="verdict-cell"><div class="verdict" data-path="athletic-trainer"><label><input type="radio" name="v-athletic-trainer-t3" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-athletic-trainer-t3" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-athletic-trainer-t3" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Physician assistant <span class="tag">added</span></td>
+            <td><span class="seq seq-apprentice">Patient-care hours first</span></td>
+            <td>~6–7 yrs — bachelor's + roughly 3 yrs of hands-on healthcare experience most programs expect + a 27-month PA master's</td>
+            <td>~$135–180k (bachelor's + PA master's; PA program alone averages ~$134k total)</td>
+            <td>Any science-heavy bachelor's, paired with an EMT or medical-assistant cert early to start logging patient-contact hours</td>
+            <td class="num">$99k (junior, post-master's)</td>
+            <td class="num">$165–200k+</td>
+            <td class="verdict-cell"><div class="verdict" data-path="physician-assistant"><label><input type="radio" name="v-physician-assistant-t3" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-physician-assistant-t3" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-physician-assistant-t3" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Physical therapist (DPT)</td>
+            <td><span class="seq seq-class">Classes — only path</span></td>
+            <td>~7 yrs — bachelor's + a 3-yr Doctor of Physical Therapy</td>
+            <td>~$165–175k (bachelor's + DPT; DPT alone averages ~$134k)</td>
+            <td><strong>CSUSM's Kinesiology B.S. is explicitly built as pre-PT prep</strong>, ten minutes from MiraCosta; DPT programs themselves are regional (USC, Loma Linda)</td>
+            <td class="num">$82–88k</td>
+            <td class="num">$124–136k</td>
+            <td class="verdict-cell"><div class="verdict" data-path="physical-therapist-dpt"><label><input type="radio" name="v-physical-therapist-dpt-t3" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-physical-therapist-dpt-t3" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-physical-therapist-dpt-t3" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Architect</td>
+            <td><span class="seq seq-both">School + logged hours together</span></td>
+            <td>8–12 yrs total — a 5-yr B.Arch/M.Arch + 3,740 hrs of logged experience (AXP) + a 6-part licensing exam (ARE)</td>
+            <td>~$150k tuition alone at NewSchool (private, 5 yrs); a public CSU/UC path would run far less</td>
+            <td>NewSchool of Architecture &amp; Design, downtown San Diego — one of the few NAAB-accredited programs in the region</td>
+            <td class="num">$76k (10th percentile)</td>
+            <td class="num">$115–135k (licensed)</td>
+            <td class="verdict-cell"><div class="verdict" data-path="architect"><label><input type="radio" name="v-architect-t3" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-architect-t3" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-architect-t3" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Doctor (MD/DO)</td>
+            <td><span class="seq seq-class">Classes — only path</span></td>
+            <td>11–15 yrs — 4-yr bachelor's + 4-yr med school + 3–7 yr residency</td>
+            <td>~$340–370k (bachelor's + med school; UCSD med school alone is $306k for CA residents)</td>
+            <td>Any strong science bachelor's (UCSD, SDSU) → MCAT → med school; UC San Diego School of Medicine is local</td>
+            <td class="num">$65–70k (resident salary, during the 3–7 yr residency)</td>
+            <td class="num">$230–270k (once practicing, family medicine)</td>
+            <td class="verdict-cell"><div class="verdict" data-path="doctor-md-do"><label><input type="radio" name="v-doctor-md-do-t3" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-doctor-md-do-t3" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-doctor-md-do-t3" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+          <tr>
+            <td>Surgeon</td>
+            <td><span class="seq seq-class">Classes — only path (longest)</span></td>
+            <td>13–17+ yrs — same as a doctor, plus a longer surgical residency and often a fellowship</td>
+            <td>Same ~$340–370k through med school — residency itself is paid, not additional tuition</td>
+            <td>Same undergrad/med-school path; UCSD Health, Scripps, and Sharp all host surgical residencies locally</td>
+            <td class="num">$65–70k (resident salary)</td>
+            <td>Still likely in residency/fellowship at similar trainee pay — the real $300k+ ceiling typically arrives after year 10, not within it</td>
+            <td class="verdict-cell"><div class="verdict" data-path="surgeon"><label><input type="radio" name="v-surgeon-t3" value="yes" class="sr-only"><span>Yes</span></label><label><input type="radio" name="v-surgeon-t3" value="maybe" class="sr-only"><span>Maybe</span></label><label><input type="radio" name="v-surgeon-t3" value="no" class="sr-only"><span>No</span></label></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note"><strong>One asymmetry worth flagging:</strong> every other row in this table hits real earning power within the 10-year window. Doctor and surgeon don't — resident pay (~$65–70k) lasts most of that decade, and surgeon's actual $300k+ ceiling typically doesn't arrive until year 12–17, well past this column's frame.</p>
+    <p class="note">Physician assistant and athletic trainer weren't on the original list — added because they sit squarely in the health/science/fitness overlap and are worth knowing about. Figures are California-specific from BLS OEWS and salary aggregators, verified by web search in September 2026, not a live BLS pull — confirm current numbers before treating any of this as final.</p>
+    <ul class="sources">
+      <li><a href="https://admission.universityofcalifornia.edu/tuition-financial-aid/tuition-cost-of-attendance/" target="_blank" rel="noopener">UC — tuition &amp; cost of attendance</a></li>
+      <li><a href="https://bursar.sdsu.edu/tuition" target="_blank" rel="noopener">SDSU — tuition &amp; fees</a></li>
+      <li><a href="https://medschool.ucsd.edu/_files/financial-aid/2025-2026%20Cost%20of%20Attendance%20SOM.pdf" target="_blank" rel="noopener">UCSD School of Medicine — cost of attendance</a></li>
+      <li><a href="https://www.thepalife.com/how-much-does-it-cost-to-go-to-physician-assistant-pa-school/" target="_blank" rel="noopener">PA school cost guide</a></li>
+      <li><a href="https://newschoolarch.edu/tuition-fees/" target="_blank" rel="noopener">NewSchool of Architecture — tuition &amp; fees</a></li>
+      <li><a href="https://www.nasm.org/resource-center/blog/certification/personal-trainer-certification-cost-comparison-2026-nasm-vs-issa-ace-acsm-cscs" target="_blank" rel="noopener">NASM — personal trainer cert cost comparison</a></li>
+      <li><a href="https://www.cdrnet.org/graduatedegree" target="_blank" rel="noopener">CDR — 2024 graduate degree requirement for RDs</a></li>
+      <li><a href="https://www.nata.org/about/athletic-training/education-overview" target="_blank" rel="noopener">NATA — athletic training education overview</a></li>
+      <li><a href="https://www.aapa.org/career-central/become-a-pa/" target="_blank" rel="noopener">AAPA — how to become a PA</a></li>
+      <li><a href="https://www.apta.org/your-career/careers-in-physical-therapy/becoming-a-pt" target="_blank" rel="noopener">APTA — becoming a physical therapist</a></li>
+      <li><a href="https://atpflightschool.com/become-a-pilot/flight-training/pilot-training-cost.html" target="_blank" rel="noopener">ATP Flight School — pilot training cost/hours</a></li>
+      <li><a href="https://www.aia.org/getting-licensed" target="_blank" rel="noopener">AIA — path to architecture licensure</a></li>
+      <li><a href="https://catalog.csusm.edu/preview_program.php?catoid=1&amp;poid=87" target="_blank" rel="noopener">CSUSM — Kinesiology, Movement Science B.S.</a></li>
+      <li><a href="https://sdmiramar.edu/programs/aviation-operations" target="_blank" rel="noopener">Miramar College — Aviation Operations</a></li>
+      <li><a href="https://ens.sdsu.edu/academics/dpd" target="_blank" rel="noopener">SDSU — Didactic Program in Dietetics</a></li>
+      <li><a href="https://newschoolarch.edu/" target="_blank" rel="noopener">NewSchool of Architecture &amp; Design</a></li>
+      <li><a href="https://be.ucsd.edu/undergrad" target="_blank" rel="noopener">UC San Diego — Bioengineering undergrad</a></li>
+      <li><a href="https://www.miracosta.edu/academics/degree-and-certificate-programs/health-sciences/kinesiology/" target="_blank" rel="noopener">MiraCosta — Kinesiology</a></li>
+    </ul>
+  </section>
+
+  <section class="step">
+    <div class="step-head">
+      <span class="step-num">4</span>
+      <h2>Reality-test before committing</h2>
+    </div>
+    <p class="step-when">Next 2–4 weeks</p>
+    <p>Nothing above means anything until it's tested against an actual day of the work. This is the step that turns a guess into a decision.</p>
+    <ul class="checklist" data-group="test">
+      <li data-id="test-1">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Call MiraCosta's Technology Career Institute in Carlsbad — (760) 795-6820 — or take one of their Friday 9am tours, and separately talk to a CSIT counselor about the Cybersecurity A.S.</span>
+        </label>
+      </li>
+      <li data-id="test-2">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Find one local union apprenticeship info session — IBEW (electrical), UA (plumbing/pipefitting), IUEC (elevator), or SMART (sheet metal) — and sign up</span>
+        </label>
+      </li>
+      <li data-id="test-3">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Set up one half-day job shadow or ride-along with a working tradesperson — most will say yes if asked directly</span>
+        </label>
+      </li>
+      <li data-id="test-4">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Sit in on one actual CTE class at the CC — many programs allow a visit sit-in on request</span>
+        </label>
+      </li>
+    </ul>
+  </section>
+
+  <section class="step">
+    <div class="step-head">
+      <span class="step-num">5</span>
+      <h2>Compare the real numbers</h2>
+    </div>
+    <p class="step-when">Once narrowed to 2–3 options</p>
+    <p>Fill this in for real once Step 3 narrows the list — this is the table that should actually decide it, not the ballpark one above.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Time to credential</th>
+            <th>Total cost</th>
+            <th>Likely debt</th>
+            <th>Starting wage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="example">
+            <td>Example: HVAC certificate at [CC name]</td>
+            <td>18 months</td>
+            <td>$6,000</td>
+            <td>$0–2,000</td>
+            <td>$42,000</td>
+          </tr>
+          <tr><td>Option A</td><td></td><td></td><td></td><td></td></tr>
+          <tr><td>Option B</td><td></td><td></td><td></td><td></td></tr>
+          <tr><td>Option C</td><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="step-head">
+      <span class="step-num">6</span>
+      <h2>Set a real decision date</h2>
+    </div>
+    <p class="step-when">Now — put it on the calendar</p>
+    <p>"Decide soon" without a date tends to quietly become "decide never." Community colleges typically open spring registration in late October or November — check the exact date for JGB's CC and pick a decision checkpoint two weeks ahead of it, so there's runway to actually enroll in the chosen path rather than defaulting into whatever's already scheduled.</p>
+    <ul class="checklist" data-group="decide">
+      <li data-id="decide-1">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Look up the CC's spring registration open date</span>
+        </label>
+      </li>
+      <li data-id="decide-2">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Put a specific decision-day on the calendar, two weeks before it</span>
+        </label>
+      </li>
+    </ul>
+  </section>
+
+  <div class="pin">
+    <h2>Do these three things this week</h2>
+    <ul class="checklist" data-group="pinned">
+      <li data-id="pin-1">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Look up MiraCosta's Technology Career Institute and CSIT/Cybersecurity program pages online <span class="tag">10 min</span></span>
+        </label>
+      </li>
+      <li data-id="pin-2">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Take the O*NET Interest Profiler together <span class="tag">15 min</span></span>
+        </label>
+      </li>
+      <li data-id="pin-3">
+        <label>
+          <input type="checkbox">
+          <span class="item-text">Pick the decision date and add it to the calendar <span class="tag">5 min</span></span>
+        </label>
+      </li>
+    </ul>
+  </div>
+
+  <footer>
+    Checkmarks save on this device only. Reopen this page anytime to pick back up.
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var STORAGE_KEY = "jgb-trade-compass-v1";
+    var state = {};
+    try {
+      state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    } catch (e) {
+      state = {};
+    }
+
+    var items = Array.prototype.slice.call(document.querySelectorAll(".checklist li[data-id]"));
+
+    function save() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    function updateProgress() {
+      var total = items.length;
+      var done = items.filter(function (li) { return !!state[li.getAttribute("data-id")]; }).length;
+      var pct = total ? Math.round((done / total) * 100) : 0;
+      document.getElementById("progress-fill").style.width = pct + "%";
+      document.getElementById("progress-label").textContent = done + " / " + total + " done";
+    }
+
+    items.forEach(function (li) {
+      var id = li.getAttribute("data-id");
+      var box = li.querySelector('input[type="checkbox"]');
+      var checked = !!state[id];
+      box.checked = checked;
+      li.classList.toggle("done", checked);
+      box.addEventListener("change", function () {
+        state[id] = box.checked;
+        li.classList.toggle("done", box.checked);
+        save();
+        updateProgress();
+      });
+    });
+
+    updateProgress();
+  })();
+
+  (function () {
+    var STORAGE_KEY = "jgb-trade-compass-verdicts-v1";
+    var state = {};
+    try {
+      state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    } catch (e) {
+      state = {};
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    function applyPath(path, value) {
+      var inputs = document.querySelectorAll('.verdict[data-path="' + path + '"] input');
+      inputs.forEach(function (input) {
+        input.checked = input.value === value;
+      });
+    }
+
+    var groups = Array.prototype.slice.call(document.querySelectorAll(".verdict[data-path]"));
+    var seenPaths = {};
+    groups.forEach(function (group) {
+      var path = group.getAttribute("data-path");
+      if (!seenPaths[path] && state[path]) {
+        applyPath(path, state[path]);
+      }
+      seenPaths[path] = true;
+    });
+
+    document.querySelectorAll('.verdict input[type="radio"]').forEach(function (input) {
+      input.addEventListener("change", function () {
+        var path = input.closest(".verdict").getAttribute("data-path");
+        state[path] = input.value;
+        save();
+        applyPath(path, input.value);
+      });
+    });
+  })();
+</script>
