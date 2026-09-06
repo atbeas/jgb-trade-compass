@@ -438,13 +438,82 @@
     outline: 2px solid var(--accent);
     outline-offset: 1px;
   }
-  .notes-saved {
-    display: block;
-    margin-top: 5px;
+  .notes-input-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .notes-input-row .notes-field { flex: 1; min-height: 42px; }
+  .notes-add {
+    flex-shrink: 0;
+    padding: 10px 14px;
+    background: var(--accent);
+    color: var(--paper-raised);
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .notes-add:hover { background: var(--accent-ink); }
+  .notes-add:focus-visible {
+    outline: 2px solid var(--accent-ink);
+    outline-offset: 1px;
+  }
+  .notes-log {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .notes-entry {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    padding: 7px 10px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 13.5px;
+  }
+  .notes-entry-date {
+    flex-shrink: 0;
     font-family: var(--font-display);
     font-size: 11px;
     color: var(--ink-soft);
-    min-height: 14px;
+    white-space: nowrap;
+    padding-top: 1px;
+  }
+  .notes-entry-text {
+    flex: 1;
+    color: var(--ink);
+    word-break: break-word;
+  }
+  .notes-entry-remove {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 2px;
+  }
+  .notes-entry-remove:hover { color: var(--bad); }
+  .notes-entry-remove:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .notes-empty {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+    margin: 8px 0 0;
   }
 
   footer {
@@ -514,9 +583,12 @@
       </li>
     </ul>
     <div class="notes-block">
-      <label class="notes-label" for="notes-electrician-plan">Notes — calls made, what they said, next step</label>
-      <textarea id="notes-electrician-plan" class="notes-field" data-notes-id="electrician-plan" rows="4" placeholder="e.g. Called ETI 9/12 — next info session is..."></textarea>
-      <span class="notes-saved" data-notes-status="electrician-plan"></span>
+      <label class="notes-label" for="notes-electrician-plan">Progress log — add a note each time you call or hear back</label>
+      <div class="notes-input-row">
+        <textarea id="notes-electrician-plan" class="notes-field" rows="2" placeholder="e.g. Called ETI — next info session is..."></textarea>
+        <button type="button" class="notes-add" data-notes-add="electrician-plan">Add entry</button>
+      </div>
+      <ul class="notes-log" data-notes-log="electrician-plan"></ul>
     </div>
   </div>
 
@@ -550,9 +622,12 @@
       </li>
     </ul>
     <div class="notes-block">
-      <label class="notes-label" for="notes-elevator-plan">Notes — calls made, what they said, next step</label>
-      <textarea id="notes-elevator-plan" class="notes-field" data-notes-id="elevator-plan" rows="4" placeholder="e.g. Called Local 18 9/12 — recruitment is..."></textarea>
-      <span class="notes-saved" data-notes-status="elevator-plan"></span>
+      <label class="notes-label" for="notes-elevator-plan">Progress log — add a note each time you call or hear back</label>
+      <div class="notes-input-row">
+        <textarea id="notes-elevator-plan" class="notes-field" rows="2" placeholder="e.g. Called Local 18 — recruitment is..."></textarea>
+        <button type="button" class="notes-add" data-notes-add="elevator-plan">Add entry</button>
+      </div>
+      <ul class="notes-log" data-notes-log="elevator-plan"></ul>
     </div>
   </div>
 
@@ -592,9 +667,12 @@
       </li>
     </ul>
     <div class="notes-block">
-      <label class="notes-label" for="notes-plumbing-plan">Notes — calls made, what they said, next step</label>
-      <textarea id="notes-plumbing-plan" class="notes-field" data-notes-id="plumbing-plan" rows="4" placeholder="e.g. Called UA 230 9/12 — appointment set for..."></textarea>
-      <span class="notes-saved" data-notes-status="plumbing-plan"></span>
+      <label class="notes-label" for="notes-plumbing-plan">Progress log — add a note each time you call or hear back</label>
+      <div class="notes-input-row">
+        <textarea id="notes-plumbing-plan" class="notes-field" rows="2" placeholder="e.g. Called UA 230 — appointment set for..."></textarea>
+        <button type="button" class="notes-add" data-notes-add="plumbing-plan">Add entry</button>
+      </div>
+      <ul class="notes-log" data-notes-log="plumbing-plan"></ul>
     </div>
   </div>
 
@@ -1323,36 +1401,108 @@
   })();
 
   (function () {
-    var STORAGE_KEY = "jgb-trade-compass-notes-v1";
-    var state = {};
+    var LOG_KEY = "jgb-trade-compass-log-v1";
+    var OLD_KEY = "jgb-trade-compass-notes-v1";
+    var logs = {};
     try {
-      state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      logs = JSON.parse(localStorage.getItem(LOG_KEY) || "{}");
     } catch (e) {
-      state = {};
+      logs = {};
     }
 
-    var timers = {};
+    // one-time migration from the old open-textarea notes format
+    try {
+      var old = JSON.parse(localStorage.getItem(OLD_KEY) || "{}");
+      var migrated = false;
+      Object.keys(old).forEach(function (id) {
+        if (old[id] && !(logs[id] && logs[id].length)) {
+          logs[id] = [{ ts: Date.now(), text: old[id] }];
+          migrated = true;
+        }
+      });
+      if (migrated) {
+        localStorage.setItem(LOG_KEY, JSON.stringify(logs));
+        localStorage.removeItem(OLD_KEY);
+      }
+    } catch (e) {}
 
     function save() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        localStorage.setItem(LOG_KEY, JSON.stringify(logs));
       } catch (e) {}
     }
 
-    document.querySelectorAll("textarea.notes-field[data-notes-id]").forEach(function (field) {
-      var id = field.getAttribute("data-notes-id");
-      var statusEl = document.querySelector('.notes-saved[data-notes-status="' + id + '"]');
-      if (state[id]) field.value = state[id];
+    function formatDate(ts) {
+      var d = new Date(ts);
+      return (
+        d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) +
+        " · " +
+        d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })
+      );
+    }
 
-      field.addEventListener("input", function () {
-        state[id] = field.value;
+    function render(id) {
+      var list = document.querySelector('.notes-log[data-notes-log="' + id + '"]');
+      if (!list) return;
+      var entries = logs[id] || [];
+      list.innerHTML = "";
+      if (!entries.length) {
+        var empty = document.createElement("li");
+        empty.className = "notes-empty";
+        empty.textContent = "No entries yet.";
+        list.appendChild(empty);
+        return;
+      }
+      entries.forEach(function (entry, index) {
+        var li = document.createElement("li");
+        li.className = "notes-entry";
+
+        var dateSpan = document.createElement("span");
+        dateSpan.className = "notes-entry-date";
+        dateSpan.textContent = formatDate(entry.ts);
+
+        var textSpan = document.createElement("span");
+        textSpan.className = "notes-entry-text";
+        textSpan.textContent = entry.text;
+
+        var removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "notes-entry-remove";
+        removeBtn.setAttribute("aria-label", "Remove this entry");
+        removeBtn.textContent = "×";
+        removeBtn.addEventListener("click", function () {
+          entries.splice(index, 1);
+          save();
+          render(id);
+        });
+
+        li.appendChild(dateSpan);
+        li.appendChild(textSpan);
+        li.appendChild(removeBtn);
+        list.appendChild(li);
+      });
+    }
+
+    document.querySelectorAll("[data-notes-add]").forEach(function (button) {
+      var id = button.getAttribute("data-notes-add");
+      var field = document.getElementById("notes-" + id);
+      render(id);
+
+      function addEntry() {
+        var text = field.value.trim();
+        if (!text) return;
+        if (!logs[id]) logs[id] = [];
+        logs[id].unshift({ ts: Date.now(), text: text });
         save();
-        if (statusEl) {
-          statusEl.textContent = "Saved";
-          clearTimeout(timers[id]);
-          timers[id] = setTimeout(function () {
-            statusEl.textContent = "";
-          }, 1500);
+        field.value = "";
+        render(id);
+      }
+
+      button.addEventListener("click", addEntry);
+      field.addEventListener("keydown", function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+          e.preventDefault();
+          addEntry();
         }
       });
     });
