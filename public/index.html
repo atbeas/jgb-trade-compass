@@ -404,6 +404,49 @@
   }
   .pin h2 { color: var(--accent-ink); }
 
+  .notes-block {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+  }
+  .notes-label {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .notes-field {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 64px;
+    padding: 10px 12px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  .notes-field::placeholder { color: var(--ink-soft); opacity: 0.75; }
+  .notes-field:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .notes-saved {
+    display: block;
+    margin-top: 5px;
+    font-family: var(--font-display);
+    font-size: 11px;
+    color: var(--ink-soft);
+    min-height: 14px;
+  }
+
   footer {
     margin-top: 32px;
     padding-top: 16px;
@@ -470,6 +513,11 @@
         </label>
       </li>
     </ul>
+    <div class="notes-block">
+      <label class="notes-label" for="notes-electrician-plan">Notes — calls made, what they said, next step</label>
+      <textarea id="notes-electrician-plan" class="notes-field" data-notes-id="electrician-plan" rows="4" placeholder="e.g. Called ETI 9/12 — next info session is..."></textarea>
+      <span class="notes-saved" data-notes-status="electrician-plan"></span>
+    </div>
   </div>
 
   <div class="pin" id="elevator-plan">
@@ -501,6 +549,11 @@
         </label>
       </li>
     </ul>
+    <div class="notes-block">
+      <label class="notes-label" for="notes-elevator-plan">Notes — calls made, what they said, next step</label>
+      <textarea id="notes-elevator-plan" class="notes-field" data-notes-id="elevator-plan" rows="4" placeholder="e.g. Called Local 18 9/12 — recruitment is..."></textarea>
+      <span class="notes-saved" data-notes-status="elevator-plan"></span>
+    </div>
   </div>
 
   <div class="pin" id="plumbing-plan">
@@ -538,6 +591,11 @@
         </label>
       </li>
     </ul>
+    <div class="notes-block">
+      <label class="notes-label" for="notes-plumbing-plan">Notes — calls made, what they said, next step</label>
+      <textarea id="notes-plumbing-plan" class="notes-field" data-notes-id="plumbing-plan" rows="4" placeholder="e.g. Called UA 230 9/12 — appointment set for..."></textarea>
+      <span class="notes-saved" data-notes-status="plumbing-plan"></span>
+    </div>
   </div>
 
   <section class="step">
@@ -1260,6 +1318,42 @@
         state[path] = input.value;
         save();
         applyPath(path, input.value);
+      });
+    });
+  })();
+
+  (function () {
+    var STORAGE_KEY = "jgb-trade-compass-notes-v1";
+    var state = {};
+    try {
+      state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    } catch (e) {
+      state = {};
+    }
+
+    var timers = {};
+
+    function save() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    document.querySelectorAll("textarea.notes-field[data-notes-id]").forEach(function (field) {
+      var id = field.getAttribute("data-notes-id");
+      var statusEl = document.querySelector('.notes-saved[data-notes-status="' + id + '"]');
+      if (state[id]) field.value = state[id];
+
+      field.addEventListener("input", function () {
+        state[id] = field.value;
+        save();
+        if (statusEl) {
+          statusEl.textContent = "Saved";
+          clearTimeout(timers[id]);
+          timers[id] = setTimeout(function () {
+            statusEl.textContent = "";
+          }, 1500);
+        }
       });
     });
   })();
